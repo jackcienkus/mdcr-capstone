@@ -2,11 +2,11 @@
 This repository contains information and files regarding the MDCR Capstone project.
 
 ## Team Members
-Yousif Elya - 
-Anthony Kosinski - kosins34@msu.edu
-Jack Cienkus -
-Kayla Kramer - 
-Renee Watson - 
+Yousif Elya - elyayous@msu.edu<br> 
+Anthony Kosinski - kosins34@msu.edu<br>
+Jack Cienkus - cienkusj@msu.edu<br>
+Kayla Kramer - krame154@msu.edu<br>
+Renee Watson - watso351@msu.edu
 
 ## Project
 This project aims to build a workflow to assist MDCR in organizing contractor compliance data, compare contractor-reported workface composition with relevant labor-market reference data, and to help produce drafts of review reports.
