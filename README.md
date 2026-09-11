@@ -1,7 +1,7 @@
 # MDCR Capstone
 This repository contains information and files regarding the MDCR Capstone project.
 
-# Team Members
+## Team Members
 Yousif Elya - 
 Anthony Kosinski - kosins34@msu.edu
 Jack Cienkus -
@@ -22,5 +22,5 @@ by geography and job category?
 - Which dashboard views best support triage, documentation, and follow-up decisions for compliance
 staff?
 
-# Files
+## Files
 *In progress - will be updated once files are added*
