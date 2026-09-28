@@ -158,7 +158,7 @@ def census_loader(region="us"):
 	if region == "us":
 		for_region = "us:1"
 	else:
-		for_region = f"state:{STATE_TO_FIPS}"
+		for_region = f"state:{STATE_TO_FIPS[region]}"
 	
 	params = {"get": "NAME,group(B03002)", "for": f"{for_region}", "key": api_key}
 	data_response = requests.get(dataset_url, params=params)
