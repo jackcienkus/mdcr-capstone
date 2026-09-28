@@ -143,7 +143,7 @@ def census_loader(region="us"):
 	"""
 	import requests
 
-	dataset_url = "https://api.census.gov/data/2022/acs/acs5"
+	dataset_url = "https://api.census.gov/data/2024/acs/acs5"
 	api_key = "32685a5c4ce6a6c58598b54cce7cf23a6608f8f0"
 
 	metadata_url = f"{dataset_url}/variables.json"
