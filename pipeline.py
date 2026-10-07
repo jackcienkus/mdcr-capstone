@@ -170,6 +170,117 @@ def census_loader(region="us"):
 
 	return df
 
+def calulate_contractor_ratios(df):
+    """
+	Takes contractor demographic data and compiles ratios for each group
+
+	df: dataframe
+     - contractor demographic data
+     - 
+
+	returns: dictionary {demographic:ratio}
+	"""
+
+    df_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
+       'White Male', 'Black or African American Male', 'Asian Male',
+       'Native Hawaiian or Other Pacific Islander Male',
+       'American Indian or Alaskan Native Male', 'Two or more races Male',
+       'White Female', 'Black or African American Female', 'Asian Female',
+       'Native Hawaiian or Other Pacific Islander Female',
+       'American Indian or Alaskan Native Female', 'Two or more races Female',
+       'Row Total']
+
+    vals = []
+
+    for i in df_categories: # for each identity
+        a = df[i][11] / df["Row Total"][11] * 100 # find percentage relative to total worker count
+        b = round(a, 2)
+        vals.append(b)
+    
+    
+    contractor_ratio = np.column_stack((df_categories, vals)) # stack the categories and ratios
+    contractor_ratio_dict = dict(contractor_ratio) # convert into a dictionary for comparison 
+    
+    return contractor_ratio
+
+def calculate_region_ratios(df):
+    """
+	Takes regional demographic data and compiles ratios for each group
+
+	df: dataframe
+     - region demographic data
+
+	returns: dictionary {demographic:ratio}
+	"""
+
+    categories = [
+    "Total Pop",
+    "Total Male",
+    "Total Female",
+    "Hispanic/Latino Pop",
+    "Hispanic/Latino Male",
+    "Hispanic/Latina Female",
+    "White Pop",
+    "White Male",
+    "White Female",
+    "Black or African American Pop",
+    "Black or African American Male",
+    "Black or African American Female",
+    "Native Am Pop",
+    "Native Am Male",
+    "Native Am Female",
+    "Asian Pop",
+    "Asian Male",
+    "Asian Female",
+    "Pacific Pop",
+    "Pacific Male",
+    "Pacific Female",
+    "Other Pop",
+    "Other Male",
+    "Other Female"]
+
+    df = df.dropna(axis = 1) # percentage is already calculated, just need to extract
+    df = df.loc[:, df.columns.str.contains('Percent')]
+    
+    vals = []
+    for i in df.columns: 
+        vals.append(df[i].item()) # list of ratios
+
+    region_ratio = np.column_stack((categories, vals)) # stack categories with their respective ratios
+    region_ratio_dict = dict(region_ratio) # saves as dictionary for comparison
+
+    return region_ratio_dict
+
+
+def calculate_differences(regional_df, contractor_df):
+    """
+
+    Finds differences od demogrpahics between region selected and contractor
+
+    regional_df: dataframe
+     - region demographic data
+
+    contractor_df: dataframe
+     - contractor demographic data
+
+    returns: list (demographic,difference)
+    (positive value is over represented, negative value is under represented)
+
+    """
+
+    regional_dict = calculate_region_ratios(regional_df) # get regional demographic ratios
+    contractor_dict = calulate_contractor_ratios(contractor_df) # get contractor demographic ratios
+
+
+    result = []
+
+    for key, val in contractor_dict.items():
+        if key in regional_dict:
+            result.append([key, round(float(val), 2) - round(float(regional_dict[key]),2)])
+
+    return result
+
+
 def main():
 	same_xlsx = True
 
@@ -180,7 +291,10 @@ def main():
 
 	census_df = census_loader(region="us")
 
-	print(census_df)
+    
+        
+
+	
 
 if __name__ == "__main__":
     main()
