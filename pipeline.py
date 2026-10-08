@@ -183,11 +183,11 @@ def calulate_contractor_ratios(df):
 
     df_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
        'White Male', 'Black or African American Male', 'Asian Male',
-       'Native Hawaiian or Other Pacific Islander Male',
-       'American Indian or Alaskan Native Male', 'Two or more races Male',
+       'Pacific Male',
+       'Native Am Male', 'Two or more races Male',
        'White Female', 'Black or African American Female', 'Asian Female',
-       'Native Hawaiian or Other Pacific Islander Female',
-       'American Indian or Alaskan Native Female', 'Two or more races Female',
+       'Pacific Female',
+       'Native Am Female', 'Two or more races Female',
        'Row Total']
 
     vals = []
@@ -201,7 +201,7 @@ def calulate_contractor_ratios(df):
     contractor_ratio = np.column_stack((df_categories, vals)) # stack the categories and ratios
     contractor_ratio_dict = dict(contractor_ratio) # convert into a dictionary for comparison 
     
-    return contractor_ratio
+    return contractor_ratio_dict
 
 def calculate_region_ratios(df):
     """
