@@ -22,5 +22,10 @@ by geography and job category?
 - Which dashboard views best support triage, documentation, and follow-up decisions for compliance
 staff?
 
+## Install Instructions
+For detailed setup instructions, please see the [Installation Guide](INSTALL.md)
+
 ## Files
 *In progress - will be updated once files are added*
+
+
