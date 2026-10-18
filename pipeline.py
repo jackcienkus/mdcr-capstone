@@ -2,6 +2,10 @@
 # MDCR Pipeline Prototype #
 # # # # # # # # # # # # # #
 
+# PURPOSE OF FILE
+# This pipeline python file controls the data pipeline for data analysis of contractor data.
+# It intakes a selected file from the user, pulls US Census API data, compares the two, and outputs the result.
+
 # data loading & analysis libraries
 import pandas as pd
 import numpy as np
@@ -319,6 +323,14 @@ def calculate_year_differences(prev_year, cur_year):
 	return result, cur_dict, prev_dict
 
 def numeric_analysis(diff_dict):
+	"""
+	Writes basic analysis results into a csv format
+
+	diff_dict: dict
+	 - Dictionary of ratio differences between contractor data and census data
+
+	returns: csv-like string of data
+	"""
 	rows = ["Demographic,Percent_Difference"]
 	for key in diff_dict:
 		rows.append(f"{key},{round(diff_dict[key]/100, 3)}")
@@ -327,6 +339,17 @@ def numeric_analysis(diff_dict):
 
 ## TO DO: PULL YEAR FROM XLSX FILE TOO
 def workforce_data_analysis(cur_df, prev_df):
+	"""
+	Does a workforce analysis on provided contractor data and outputs the results with proper language.
+	Output is in form of a csv document and txt file.
+
+	cur_df: DataFrame
+	 - Current year contractor data as a dataframe
+	prev_df: DataFrame
+	 - Previous year contractor data as a dataframe
+
+	returns: None
+	"""
 	census_df = census_loader(region="us")
 
 	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
