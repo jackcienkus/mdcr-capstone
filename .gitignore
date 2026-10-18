@@ -9,6 +9,8 @@ __pycache__/
 
 # Confidental Data
 data/
+contractor_analysis.txt
+contractor_census_ratio.csv
 
 # Distribution / packaging
 .Python
