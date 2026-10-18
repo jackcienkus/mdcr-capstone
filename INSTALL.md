@@ -6,8 +6,9 @@ Clone the repository to your local machine with the command<br>
 ```git clone https://github.com/jackcienkus/mdcr-capstone.git```
 
 *Step 2*<br>
+**Using Conda**
 Navigate to the folder of the repository on your local machine.
-Once there, if you prefer to set up a conda virtual environment, run the following commands:
+Once there, if you prefer to set up a conda virtual environment, open a conda command prompt and run the following commands:
 
 ```conda env create --file environment.yml```<br>
 This creates the conda environment on your machine using the instructions provided in the YAML file
@@ -15,6 +16,7 @@ This creates the conda environment on your machine using the instructions provid
 ```conda activate mdcr-capstone```<br>
 This activates the environment created from the previous command. You'll need to activate the environment before using the pipeline.
 
+**Using local install**
 Alternatively, if you would prefer to install the required packages on your machine, use pip:<br>
 ```pip install pymupdf openpyxl requests pandas numpy```
 
