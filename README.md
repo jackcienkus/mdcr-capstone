@@ -23,9 +23,6 @@ by geography and job category?
 staff?
 
 ## Install Instructions
-For detailed setup instructions, please see the [Installation Guide](INSTALL.md)
-
-## Files
-*In progress - will be updated once files are added*
+For detailed setup instructions, please see the [Installation & Usage Guide](INSTALL.md)
 
 
