@@ -6,6 +6,9 @@
 # This pipeline python file controls the data pipeline for data analysis of contractor data.
 # It intakes a selected file from the user, pulls US Census API data, compares the two, and outputs the result.
 
+# HOW TO USE
+# See INSTALL.md for instructions on how to set up and use pipeline
+
 # data loading & analysis libraries
 import pandas as pd
 import numpy as np
