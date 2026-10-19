@@ -203,7 +203,7 @@ def calculate_contractor_ratios(df):
 
 	vals = []
 
-	for i in df_categories: # for each identity
+	for i in updated_categories: # for each identity
 		a = df[i][11] / df["Row Total"][11] * 100 # find percentage relative to total worker count
 		b = round(a, 2)
 		vals.append(b)
