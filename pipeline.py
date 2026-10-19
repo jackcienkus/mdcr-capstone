@@ -191,15 +191,7 @@ def calculate_contractor_ratios(df):
 	returns: dictionary {demographic:ratio}
 	"""
 
-	df_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
-	   'White Male', 'Black or African American Male', 'Asian Male',
-	   'Native Hawaiian or Other Pacific Islander Male',
-	   'American Indian or Alaskan Native Male', 'Two or more races Male',
-	   'White Female', 'Black or African American Female', 'Asian Female',
-	   'Native Hawaiian or Other Pacific Islander Female',
-	   'American Indian or Alaskan Native Female', 'Two or more races Female',
-	   'Row Total']
-
+    #Labels for each ratio
 	updated_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
 	   'White Male', 'Black or African American Male', 'Asian Male',
 	   'Pacific Male',
@@ -274,7 +266,7 @@ def calculate_region_ratios(df):
 def calculate_differences(regional_df, contractor_df):
 	"""
 
-	Finds differences od demogrpahics between region selected and contractor
+	Finds differences of demographic ratio data between region selected and contractor
 
 	regional_df: dataframe
 	 - region demographic data
@@ -314,8 +306,8 @@ def calculate_year_differences(prev_year, cur_year):
 
 	"""
 
-	prev_dict = calculate_contractor_ratios(prev_year) # get regional demographic ratios
-	cur_dict = calculate_contractor_ratios(cur_year) # get contractor demographic ratios
+	prev_dict = calculate_contractor_ratios(prev_year) # get previous contractor demographic ratios
+	cur_dict = calculate_contractor_ratios(cur_year) # get current contractor demographic ratios
 
 	result = []
 
@@ -340,7 +332,7 @@ def numeric_analysis(diff_dict):
 
 	return "\n".join(rows)
 
-## TO DO: PULL YEAR FROM XLSX FILE TOO
+
 def workforce_data_analysis(cur_df, prev_df):
 	"""
 	Does a workforce analysis on provided contractor data and outputs the results with proper language.
