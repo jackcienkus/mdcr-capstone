@@ -7,7 +7,9 @@ Clone the repository to your local machine with the command<br>
 
 *Step 2*<br>
 **Using Conda**<br>
-Navigate to the folder of the repository on your local machine.
+Navigate to the folder of the repository on your local machine using cd, for example:<br>
+```cd Path\to\mdcr-capstone```
+
 Once there, if you prefer to set up a conda virtual environment, open a conda command prompt and run the following commands:
 
 ```conda env create --file environment.yml```<br>
@@ -32,4 +34,4 @@ Once the file is downloaded somewhere on your local machine, go to your terminal
 
 Once this is ran, a file dialogue window will appear. Use your file finder to find the previously downloaded Contractor D XLSX file and select it. It should state inside the terminal "Selected 'Contractor D Workforce Data Form', Loading..."
 
-Once your terminal says "Loaded 'Contractor D Workforce Data Form'!" You can look inside your folder to find two new files, labelled "contractor_analysis.txt" and "contractor_census_ratio.csv", this two files both show the results of the pipeline analysis on the contractor data. The "contractor_analysis.txt" offers a written breakdown of the employment demographics and how they compare to general hirable population as well as the previous year. The "contractor_census_ratio.csv" file offers a formatted version of the demographic comparison data.
+Once your terminal says "Loaded 'Contractor D Workforce Data Form'!" You can look inside the mdcr-capstone folder to find two new files, labelled "contractor_analysis.txt" and "contractor_census_ratio.csv", this two files both show the results of the pipeline analysis on the contractor data. The "contractor_analysis.txt" offers a written breakdown of the employment demographics and how they compare to general hirable population as well as the previous year. The "contractor_census_ratio.csv" file offers a formatted version of the demographic comparison data.
