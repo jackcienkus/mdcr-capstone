@@ -193,13 +193,12 @@ def calculate_contractor_ratios(df):
 
     #Labels for each ratio
 	updated_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
-	   'White Male', 'Black or African American Male', 'Asian Male',
-	   'Pacific Male',
-	   'Native Am Male', 'Two or more races Male',
-	   'White Female', 'Black or African American Female', 'Asian Female',
-	   'Pacific Female',
-	   'Native Am Female', 'Two or more races Female',
-	   'Row Total']
+       'White Male', 'Black or African American Male', 'Asian Male',
+       'Native Hawaiian or Other Pacific Islander Male',
+       'American Indian or Alaskan Native Male', 'Two or more races Male',
+       'White Female', 'Black or African American Female', 'Asian Female',
+       'Native Hawaiian or Other Pacific Islander Female',
+       'American Indian or Alaskan Native Female', 'Two or more races Female']
 
 	vals = []
 
@@ -207,8 +206,7 @@ def calculate_contractor_ratios(df):
 		a = df[i][11] / df["Row Total"][11] * 100 # find percentage relative to total worker count
 		b = round(a, 2)
 		vals.append(b)
-	
-	
+
 	contractor_ratio = np.column_stack((updated_categories, vals)) # stack the categories and ratios
 	contractor_ratio_dict = dict(contractor_ratio) # convert into a dictionary for comparison 
 	
