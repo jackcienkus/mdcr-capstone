@@ -21,7 +21,6 @@ import requests
 from docx import Document
 
 # file loader
-import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
@@ -428,10 +427,11 @@ def main():
 		cur_df, prev_df = df_loader(same_xlsx) # two sheets in one
 	# else:
 	# 	df = df_loader(same_xlsx) # one sheet
+	print("Starting...")
 	workforce_data_analysis(cur_df, prev_df, home_dir)
 	print(f"Files saved to: {home_dir}")
 	messagebox.showinfo("Saved!",
-						f"Files 'contractor_analysis.docx'\nand 'contractor_census_ratio.csv'\nsaved to:\n\n{home_dir}\n\nGoodbye!")
+						f"Files 'contractor_analysis.docx'\nand 'contractor_census_ratio.csv'\nsaved to:\n\n'{home_dir}'\n\nGoodbye!")
 	print("Closing...")
 if __name__ == "__main__":
 	main()
