@@ -288,6 +288,14 @@ def calculate_differences(regional_df, contractor_df):
 	regional_dict = calculate_region_ratios(regional_df) # get regional demographic ratios
 	contractor_dict = calculate_contractor_ratios(contractor_df) # get contractor demographic ratios
 
+	# Match wording for dictionaries
+	regional_dict["Native Hawaiian or Other Pacific Islander Female"] = regional_dict.pop("Pacific Female")
+	regional_dict["American Indian or Alaskan Native Female"] = regional_dict.pop("Native Am Female")
+	regional_dict["Native Hawaiian or Other Pacific Islander Male"] = regional_dict.pop("Pacific Male")
+	regional_dict["American Indian or Alaskan Native Male"] = regional_dict.pop("Native Am Male")
+	regional_dict["Two or more races Male"] = regional_dict.pop("Other Male")
+	regional_dict["Two or more races Female"] = regional_dict.pop("Other Female")
+
 	result = []
 
 	for key, val in contractor_dict.items():
@@ -416,6 +424,28 @@ def workforce_data_analysis(cur_df, prev_df, path: Path):
 	with open(f"contractor_analysis.txt", "w", encoding="utf-8") as file:
 		file.write(analysis)
 
+def power_bi_csv(cur_df, prev_df, path: Path):
+	census_df = census_loader()
+
+	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
+	diff_dict, regional_dict, contractor_dict = dict(diff_dict), dict(regional_dict), dict(contractor_dict)
+
+	print(diff_dict)
+	print()
+	print(regional_dict)
+	print()
+	print(contractor_dict)
+
+	#rows = ["Demographic,Percent_Difference"]
+	#for key in diff_dict:
+	#	rows.append(f"{key},{round(diff_dict[key]/100, 3)}")
+
+	csv_text = numeric_analysis(diff_dict)
+	#print("Saving 'contractor_census_ratio.csv'...")
+	#with open(f"PowerBI_Data/contractor_census_ratio.csv", "w", encoding="utf-8") as file:
+	#	file.write(csv_text)
+	#print("Saved 'contractor_census_ratio.csv' successfully.")
+
 def main():
 
 	home_dir = Path.home()
@@ -427,8 +457,10 @@ def main():
 		cur_df, prev_df = df_loader(same_xlsx) # two sheets in one
 	# else:
 	# 	df = df_loader(same_xlsx) # one sheet
+
 	print("Starting...")
 	workforce_data_analysis(cur_df, prev_df, home_dir)
+	#power_bi_csv(cur_df, prev_df, home_dir)
 	print(f"Files saved to: {home_dir}")
 	messagebox.showinfo("Saved!",
 						f"Files 'contractor_analysis.docx'\nand 'contractor_census_ratio.csv'\nsaved to:\n\n'{home_dir}'\n\nGoodbye!")
