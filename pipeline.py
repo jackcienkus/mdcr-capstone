@@ -146,6 +146,38 @@ def df_loader(same_xlsx=True):
 
 		return df
 
+def gooey_loader(load_path, save_path):
+	"""
+	Run entire process given an absolute path (for the gooey)
+	"""
+
+	# Load file
+	df = pd.read_excel(f'{load_path}', skiprows=7, sheet_name=None)
+	print(f"Loaded {load_path}.")
+	previous_year_df = df['Workforce Data Previous Year']
+	current_year_df = df['Workforce Data Current Year']
+
+	previous_year_df.columns = ['Job Role', 'Hispanic/Latino Male', 'Hispanic/Latina Female', 'White Male', 'Black or African American Male',
+		'Asian Male', 'Native Hawaiian or Other Pacific Islander Male',
+		'American Indian or Alaskan Native Male', 'Two or more races Male', 'White Female',
+		'Black or African American Female', 'Asian Female',
+		'Native Hawaiian or Other Pacific Islander Female',
+		'American Indian or Alaskan Native Female', 'Two or more races Female',
+		'Row Total']
+	previous_year_df = previous_year_df.iloc[1:13].fillna(0)
+
+	current_year_df.columns = ['Job Role', 'Hispanic/Latino Male', 'Hispanic/Latina Female', 'White Male', 'Black or African American Male',
+		'Asian Male', 'Native Hawaiian or Other Pacific Islander Male',
+		'American Indian or Alaskan Native Male', 'Two or more races Male', 'White Female',
+		'Black or African American Female', 'Asian Female',
+		'Native Hawaiian or Other Pacific Islander Female',
+		'American Indian or Alaskan Native Female', 'Two or more races Female',
+		'Row Total']
+	current_year_df = current_year_df.iloc[1:13].fillna(0)
+
+	workforce_data_analysis(current_year_df, previous_year_df, save_path)
+	power_bi_csv(current_year_df, previous_year_df, save_path)
+
 def census_loader():
 	"""
 	Pulls and returns regional EEO data from the US Census API
@@ -419,7 +451,10 @@ def workforce_data_analysis(cur_df, prev_df, path: Path):
 	p = document.add_paragraph('')
 	p.add_run(analysis)
 	print("Saving 'contractor_analysis.docx'...")
-	document.save(str(path / "contractor_analysis.docx"))
+	if type(path) == str:
+		document.save(str(path + "/" + "contractor_analysis.docx"))
+	else:
+		document.save(str(path / "contractor_analysis.docx"))
 	print("Saved 'contractor_analysis.docx' successfully.")
 	with open(f"contractor_analysis.txt", "w", encoding="utf-8") as file:
 		file.write(analysis)
@@ -460,7 +495,7 @@ def main():
 
 	print("Starting...")
 	workforce_data_analysis(cur_df, prev_df, home_dir)
-	#power_bi_csv(cur_df, prev_df, home_dir)
+	power_bi_csv(cur_df, prev_df, home_dir)
 	print(f"Files saved to: {home_dir}")
 	messagebox.showinfo("Saved!",
 						f"Files 'contractor_analysis.docx'\nand 'contractor_census_ratio.csv'\nsaved to:\n\n'{home_dir}'\n\nGoodbye!")
