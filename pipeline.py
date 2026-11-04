@@ -355,6 +355,14 @@ def calculate_year_differences(prev_year, cur_year):
 	prev_dict = calculate_contractor_ratios(prev_year) # get previous contractor demographic ratios
 	cur_dict = calculate_contractor_ratios(cur_year) # get current contractor demographic ratios
 
+	# Match wording for dictionaries
+	regional_dict["Native Hawaiian or Other Pacific Islander Female"] = regional_dict.pop("Pacific Female")
+	regional_dict["American Indian or Alaskan Native Female"] = regional_dict.pop("Native Am Female")
+	regional_dict["Native Hawaiian or Other Pacific Islander Male"] = regional_dict.pop("Pacific Male")
+	regional_dict["American Indian or Alaskan Native Male"] = regional_dict.pop("Native Am Male")
+	regional_dict["Two or more races Male"] = regional_dict.pop("Other Male")
+	regional_dict["Two or more races Female"] = regional_dict.pop("Other Female")
+
 	result = []
 
 	for key, val in prev_dict.items():
@@ -412,8 +420,8 @@ def workforce_data_analysis(cur_df, prev_df, path: Path):
 	#with open(f"{FILENAME}_year_change_ratio.csv", "w", encoding="utf-8") as file:
 	#	file.write(csv_text)
 
-	n_employees = int(np.sum(cur_df['Row Total']))
-	n_prev_employees = int(np.sum(prev_df['Row Total']))
+	n_employees = int(cur_df[cur_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
+	n_prev_employees = int(prev_df[prev_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
 
 	statements = list()
 	statements.append(f"Contractor returned the completed Workforce Data Form, which indicated it had {n_employees} employees as of the review date.")
