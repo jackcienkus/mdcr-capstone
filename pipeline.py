@@ -364,8 +364,8 @@ def workforce_data_analysis(cur_df, prev_df):
 	#with open(f"{FILENAME}_year_change_ratio.csv", "w", encoding="utf-8") as file:
 	#	file.write(csv_text)
 
-	n_employees = int(np.sum(cur_df['Row Total']))
-	n_prev_employees = int(np.sum(prev_df['Row Total']))
+	n_employees = int(cur_df[cur_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
+	n_prev_employees = int(prev_df[prev_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
 
 	statements = []
 	statements.append(f"Contractor returned the completed Workforce Data Form, which indicated it had {n_employees} employees as of the review date.")
