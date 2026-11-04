@@ -427,24 +427,24 @@ def workforce_data_analysis(cur_df, prev_df, path: Path):
 def power_bi_csv(cur_df, prev_df, path: Path):
 	census_df = census_loader()
 
-	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
-	diff_dict, regional_dict, contractor_dict = dict(diff_dict), dict(regional_dict), dict(contractor_dict)
+	diff_dict, _, _ = calculate_differences(census_df, cur_df)
+	diff_df = pd.DataFrame(diff_dict, columns=['Demographic', 'Percent Difference'])
 
-	print(diff_dict)
-	print()
-	print(regional_dict)
-	print()
-	print(contractor_dict)
+	script_dir = Path(__file__).resolve().parent
+	target_dir = script_dir / "PowerBI_Data"
 
-	#rows = ["Demographic,Percent_Difference"]
-	#for key in diff_dict:
-	#	rows.append(f"{key},{round(diff_dict[key]/100, 3)}")
+	target_dir.mkdir(parents=True, exist_ok=True) # create folder if doesn't exist
 
-	csv_text = numeric_analysis(diff_dict)
-	#print("Saving 'contractor_census_ratio.csv'...")
-	#with open(f"PowerBI_Data/contractor_census_ratio.csv", "w", encoding="utf-8") as file:
-	#	file.write(csv_text)
-	#print("Saved 'contractor_census_ratio.csv' successfully.")
+	cur_df = cur_df.replace(r'^\s*$', 0, regex=True) # replace empty white space with 0
+	prev_df = prev_df.replace(r'^\s*$', 0, regex=True)
+	cur_df.iloc[:, 1:] = cur_df.iloc[:, 1:].astype(int) # turn all number rows to ints (just in case)
+	prev_df.iloc[:, 1:] = prev_df.iloc[:, 1:].astype(int)
+	cur_df.iloc[:, 1:] = cur_df.iloc[:, 1:] / 10 # fixing weird issue where csv saves with all results multiplied by ten?
+	prev_df.iloc[:, 1:] = prev_df.iloc[:, 1:] / 10
+
+	diff_df.to_csv(target_dir / "difference.csv", index=False)
+	cur_df.to_csv(target_dir / "current_year.csv", index=False)
+	prev_df.to_csv(target_dir / "previous_year.csv", index=False)
 
 def main():
 
