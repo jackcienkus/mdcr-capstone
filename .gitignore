@@ -9,6 +9,7 @@ __pycache__/
 
 # Confidental Data
 data/
+PowerBI_Data/
 contractor_analysis.txt
 contractor_census_ratio.csv
 
