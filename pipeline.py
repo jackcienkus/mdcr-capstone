@@ -410,9 +410,14 @@ def workforce_data_analysis(cur_df, prev_df, path: Path):
 	# Writes to file
 	csv_text = numeric_analysis(diff_dict)
 	print("Saving 'contractor_census_ratio.csv'...")
-	with open(f"contractor_census_ratio.csv", "w", encoding="utf-8") as file:
-		file.write(csv_text)
-	print("Saved 'contractor_census_ratio.csv' successfully.")
+
+	if type(path) == str:
+		with open(f"{path}/contractor_census_ratio.csv", "w", encoding="utf-8") as file:
+			file.write(csv_text)
+	else:
+		with open(f"contractor_census_ratio.csv", "w", encoding="utf-8") as file:
+			file.write(csv_text)
+		print("Saved 'contractor_census_ratio.csv' successfully.")
 	# YoY CHANGE FILES
 	#csv_text = numeric_analysis(yr_diff_dict)
 

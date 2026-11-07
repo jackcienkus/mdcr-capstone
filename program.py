@@ -10,7 +10,7 @@ class DataProcessorApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Data Export & Processing Utility")
+        self.setWindowTitle("Contractor Data Template Creation")
         self.setMinimumSize(500, 350)
 
         # Main Layout Container
@@ -57,12 +57,12 @@ class DataProcessorApp(QMainWindow):
         options_layout.setSpacing(8)
 
         self.chk_census = QCheckBox("Save Census Data")
-        self.chk_csv = QCheckBox("Save as CSV")
-        self.chk_powerbi = QCheckBox("Save Results for Power BI files")
+        self.chk_csv = QCheckBox("Save as Word Document")
+        self.chk_powerbi = QCheckBox("Save Data for Power BI")
 
         # Set default states if desired
         self.chk_csv.setChecked(True)
-        self.chk_census.setChecked(True)
+        #self.chk_census.setChecked(True)
         self.chk_powerbi.setChecked(True)
 
         options_layout.addWidget(self.chk_census)
