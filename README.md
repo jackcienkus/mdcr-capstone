@@ -8,19 +8,33 @@ Jack Cienkus - cienkusj@msu.edu<br>
 Kayla Kramer - krame154@msu.edu<br>
 Renee Watson - watso351@msu.edu
 
+## MDCR Overview
+The Michigan Department of Civil Rights (MDCR) is the state agency responsible for investigating and resolving complaints of unlawful discrimination across Michigan.
+
 ## Project
-This project aims to build a workflow to assist MDCR in organizing contractor compliance data, compare contractor-reported workface composition with relevant labor-market reference data, and to help produce drafts of review reports.
+This project aims to build a workflow to assist MDCR in organizing contractor compliance data, compare contractor-reported workforce composition with relevant labor-market reference data, and to help produce drafts of review reports. We will be creating a pipeline which can automatically draft editable reports on equal employment opportunity compliance based on inputted contractor data. 
 
 ## Goal
-The end goal for this project is to help MDCR reduce manual search time, calculation and re-entry that goes into each review.
+The end goal for this project is to help MDCR reduce manual search time, calculation and re-entry that goes into each review. 
 
 ## Research Questions
 - How can MDCR systematically compare contractor workforce composition to labor-market availability
 by geography and job category?
 - Which statistical comparisons are most useful for flagging potential compliance concerns while minimizing false positives?
-- What data-integration workflow can automate the matching of contractor submissions to geographyspecific reference datasets?
+- What data-integration workflow can automate the matching of contractor submissions to geography-specific reference datasets?
 - Which dashboard views best support triage, documentation, and follow-up decisions for compliance
 staff?
+
+## Repository Structure
+| File / Folder | Description |
+| :--- | :--- |
+| [`notebooks/`](notebooks/) | Contains exploratory and statistical analysis Jupyter notebooks (`B_Analysis.ipynb`, `C_Analysis.ipynb`). |
+| [`.gitignore`](.gitignore) | Specifies untracked temporary files and local outputs for Git to ignore |
+| [`INSTALL.md`](INSTALL.md) | Setup and installation instructions for the project |
+| [`LICENSE`](LICENSE) | Creative Commons license governing repository usage and distribution |
+| [`README.md`](README.md) | Project overview, research questions, and repository guide |
+| [`environment.yml`](environment.yml) |  Conda environment specification and Python package dependencies |
+| [`pipeline.py`](pipeline.py) | Main data processing and compliance report generation pipeline |
 
 ## Install Instructions
 For detailed setup instructions, please see the [Installation & Usage Guide](INSTALL.md)
