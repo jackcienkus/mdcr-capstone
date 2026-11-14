@@ -28,13 +28,13 @@ staff?
 ## Repository Structure
 | File / Folder | Description |
 | :--- | :--- |
-| [`notebooks/`](notebooks/) | Contains exploratory and statistical analysis Jupyter notebooks (`B_Analysis.ipynb`, `C_Analysis.ipynb`). |
-| [`.gitignore`](.gitignore) | Specifies untracked temporary files and local outputs for Git to ignore |
-| [`INSTALL.md`](INSTALL.md) | Setup and installation instructions for the project |
-| [`LICENSE`](LICENSE) | Creative Commons license governing repository usage and distribution |
-| [`README.md`](README.md) | Project overview, research questions, and repository guide |
-| [`environment.yml`](environment.yml) |  Conda environment specification and Python package dependencies |
-| [`pipeline.py`](pipeline.py) | Main data processing and compliance report generation pipeline |
+| notebooks/ | Contains exploratory and statistical analysis Jupyter notebooks (`B_Analysis.ipynb`, `C_Analysis.ipynb`). |
+| .gitignore | Specifies untracked temporary files and local outputs for Git to ignore |
+| INSTALL.md | Setup and installation instructions for the project |
+| LICENSE | Creative Commons license governing repository usage and distribution |
+| README.md| Project overview, research questions, and repository guide |
+| environment.yml |  Conda environment specification and Python package dependencies |
+| pipeline.py | Main data processing and compliance report generation pipeline |
 
 ## Install Instructions
 For detailed setup instructions, please see the [Installation & Usage Guide](INSTALL.md)
