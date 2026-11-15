@@ -3,7 +3,7 @@
 # # # # # # # # # # # # # #
 
 # PURPOSE OF FILE
-# This pipeline python file controls the data pipeline for data analysis of contractor data.
+# This pipeline Python file controls the data pipeline for data analysis of contractor data.
 # It intakes a selected file from the user, pulls US Census API data, compares the two, and outputs the result.
 
 # HOW TO USE
@@ -12,12 +12,18 @@
 # data loading & analysis libraries
 import pandas as pd
 import numpy as np
-import pymupdf
+# import pymupdf
+# import requests
+from pathlib import Path
+import os
+# import sys
 import requests
+from docx import Document
 
 # file loader
-import tkinter as tk
+from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 
 # state loading dictionary for census
 STATE_TO_FIPS = { # Michigan is 26
@@ -84,21 +90,24 @@ def df_loader(same_xlsx=True):
 
 	returns: constructed dataframe(s)
 	"""
-	root = tk.Tk()
+	file_select_ok = False
+	selected_file = None
+	file_name = None
+	root = Tk()
 	root.withdraw()
+	messagebox.showinfo("Welcome", "Please select data you want to analyze.")
+	while not file_select_ok:
+		selected_file = filedialog.askopenfilename(
+			title="Select a File"
+		)
 
-	selected_file = filedialog.askopenfilename(
-		title="Select a File"
-	)
-
-	file_name = selected_file.split("/")[-1]
-	print(f"Selected '{file_name}', loading...", end='\r')
-
+		file_name = selected_file.split("/")[-1]
+		file_select_ok = messagebox.askokcancel("File Selected", f"Selected '{file_name}'. OK to continue?")
+	print("Loading...")
 	# If current year and previous year data exists on the same XLSX
 	if same_xlsx:
 		df = pd.read_excel(f'{selected_file}', skiprows=7, sheet_name=None)
-		print(f"Loaded '{file_name}'!              ")
-
+		print(f"Loaded {file_name}.")
 		previous_year_df = df['Workforce Data Previous Year']
 		current_year_df = df['Workforce Data Current Year']
 
@@ -137,7 +146,39 @@ def df_loader(same_xlsx=True):
 
 		return df
 
-def census_loader(region="us"):
+def gooey_loader(load_path, save_path):
+	"""
+	Run entire process given an absolute path (for the gooey)
+	"""
+
+	# Load file
+	df = pd.read_excel(f'{load_path}', skiprows=7, sheet_name=None)
+	print(f"Loaded {load_path}.")
+	previous_year_df = df['Workforce Data Previous Year']
+	current_year_df = df['Workforce Data Current Year']
+
+	previous_year_df.columns = ['Job Role', 'Hispanic/Latino Male', 'Hispanic/Latina Female', 'White Male', 'Black or African American Male',
+		'Asian Male', 'Native Hawaiian or Other Pacific Islander Male',
+		'American Indian or Alaskan Native Male', 'Two or more races Male', 'White Female',
+		'Black or African American Female', 'Asian Female',
+		'Native Hawaiian or Other Pacific Islander Female',
+		'American Indian or Alaskan Native Female', 'Two or more races Female',
+		'Row Total']
+	previous_year_df = previous_year_df.iloc[1:13].fillna(0)
+
+	current_year_df.columns = ['Job Role', 'Hispanic/Latino Male', 'Hispanic/Latina Female', 'White Male', 'Black or African American Male',
+		'Asian Male', 'Native Hawaiian or Other Pacific Islander Male',
+		'American Indian or Alaskan Native Male', 'Two or more races Male', 'White Female',
+		'Black or African American Female', 'Asian Female',
+		'Native Hawaiian or Other Pacific Islander Female',
+		'American Indian or Alaskan Native Female', 'Two or more races Female',
+		'Row Total']
+	current_year_df = current_year_df.iloc[1:13].fillna(0)
+
+	workforce_data_analysis(current_year_df, previous_year_df, save_path)
+	power_bi_csv(current_year_df, previous_year_df, save_path)
+
+def census_loader():
 	"""
 	Pulls and returns regional EEO data from the US Census API
 
@@ -148,7 +189,6 @@ def census_loader(region="us"):
 
 	returns: constructed dataframe
 	"""
-	import requests
 
 	dataset_url = "https://api.census.gov/data/2018/acs/acs5/eeo" # 2018
 	api_key = "32685a5c4ce6a6c58598b54cce7cf23a6608f8f0"
@@ -163,7 +203,7 @@ def census_loader(region="us"):
 	}
 
 	# params for loading
-	# for: state:26 is michigan
+	# for: state:26 is Michigan
 	# do: for: us-1 for USA
 	params = {
 		"get": "group(EEOALL1R)",
@@ -191,14 +231,14 @@ def calculate_contractor_ratios(df):
 	returns: dictionary {demographic:ratio}
 	"""
 
-    #Labels for each ratio
+	#Labels for each ratio
 	updated_categories = ['Hispanic/Latino Male', 'Hispanic/Latina Female',
-       'White Male', 'Black or African American Male', 'Asian Male',
-       'Native Hawaiian or Other Pacific Islander Male',
-       'American Indian or Alaskan Native Male', 'Two or more races Male',
-       'White Female', 'Black or African American Female', 'Asian Female',
-       'Native Hawaiian or Other Pacific Islander Female',
-       'American Indian or Alaskan Native Female', 'Two or more races Female']
+	   'White Male', 'Black or African American Male', 'Asian Male',
+	   'Native Hawaiian or Other Pacific Islander Male',
+	   'American Indian or Alaskan Native Male', 'Two or more races Male',
+	   'White Female', 'Black or African American Female', 'Asian Female',
+	   'Native Hawaiian or Other Pacific Islander Female',
+	   'American Indian or Alaskan Native Female', 'Two or more races Female']
 
 	vals = []
 
@@ -273,12 +313,20 @@ def calculate_differences(regional_df, contractor_df):
 	 - contractor demographic data
 
 	returns: list (demographic,difference)
-	(positive value is over represented, negative value is under represented)
+	(positive value is over-represented, negative value is underrepresented)
 
 	"""
 
 	regional_dict = calculate_region_ratios(regional_df) # get regional demographic ratios
 	contractor_dict = calculate_contractor_ratios(contractor_df) # get contractor demographic ratios
+
+	# Match wording for dictionaries
+	regional_dict["Native Hawaiian or Other Pacific Islander Female"] = regional_dict.pop("Pacific Female")
+	regional_dict["American Indian or Alaskan Native Female"] = regional_dict.pop("Native Am Female")
+	regional_dict["Native Hawaiian or Other Pacific Islander Male"] = regional_dict.pop("Pacific Male")
+	regional_dict["American Indian or Alaskan Native Male"] = regional_dict.pop("Native Am Male")
+	regional_dict["Two or more races Male"] = regional_dict.pop("Other Male")
+	regional_dict["Two or more races Female"] = regional_dict.pop("Other Female")
 
 	result = []
 
@@ -300,7 +348,7 @@ def calculate_year_differences(prev_year, cur_year):
 	 - current year demographic data
 
 	returns: list (demographic,difference)
-	(positive value is over represented, negative value is under represented)
+	(positive value is over-represented, negative value is underrepresented)
 
 	"""
 
@@ -331,7 +379,7 @@ def numeric_analysis(diff_dict):
 	return "\n".join(rows)
 
 
-def workforce_data_analysis(cur_df, prev_df):
+def workforce_data_analysis(cur_df, prev_df, path: Path):
 	"""
 	Does a workforce analysis on provided contractor data and outputs the results with proper language.
 	Output is in form of a csv document and txt file.
@@ -343,20 +391,20 @@ def workforce_data_analysis(cur_df, prev_df):
 
 	returns: None
 	"""
-	census_df = census_loader(region="us")
+	census_df = census_loader()
 
 	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
-	yr_diff_dict, cur_dict, prev_dict = calculate_year_differences(prev_df, cur_df)
+	# yr_diff_dict, cur_dict, prev_dict = calculate_year_differences(prev_df, cur_df)
 	diff_dict, regional_dict, contractor_dict = dict(diff_dict), dict(regional_dict), dict(contractor_dict)
-	yr_diff_dict, cur_dict, prev_dict = dict(yr_diff_dict), dict(cur_dict), dict(prev_dict)
+	# yr_diff_dict, cur_dict, prev_dict = dict(yr_diff_dict), dict(cur_dict), dict(prev_dict)
 
-	# DEMOGRAHPIC CHANGE FILES
+	# DEMOGRAPHIC CHANGE FILES
 	# Writes to file
 	csv_text = numeric_analysis(diff_dict)
-
+	print("Saving 'contractor_census_ratio.csv'...")
 	with open(f"contractor_census_ratio.csv", "w", encoding="utf-8") as file:
 		file.write(csv_text)
-
+	print("Saved 'contractor_census_ratio.csv' successfully.")
 	# YoY CHANGE FILES
 	#csv_text = numeric_analysis(yr_diff_dict)
 
@@ -367,7 +415,7 @@ def workforce_data_analysis(cur_df, prev_df):
 	n_employees = int(cur_df[cur_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
 	n_prev_employees = int(prev_df[prev_df['Job Role'] == 'Total Workers']['Row Total'].iloc[0])
 
-	statements = []
+	statements = list()
 	statements.append(f"Contractor returned the completed Workforce Data Form, which indicated it had {n_employees} employees as of the review date.")
 
 	# Employment number changes
@@ -398,27 +446,59 @@ def workforce_data_analysis(cur_df, prev_df):
 
 	analysis += "\n" + words
 
+	document = Document()
+	document.add_heading('Contractor Analysis', 0)
+	p = document.add_paragraph('')
+	p.add_run(analysis)
+	print("Saving 'contractor_analysis.docx'...")
+	if type(path) == str:
+		document.save(str(path + "/" + "contractor_analysis.docx"))
+	else:
+		document.save(str(path / "contractor_analysis.docx"))
+	print("Saved 'contractor_analysis.docx' successfully.")
 	with open(f"contractor_analysis.txt", "w", encoding="utf-8") as file:
 		file.write(analysis)
 
-def main():
-	import os
-	import sys
+def power_bi_csv(cur_df, prev_df, path: Path):
+	census_df = census_loader()
 
-	# Force the working directory to be the script's actual folder
-	# 	important for writing the csv files
-	script_dir = os.path.dirname(os.path.abspath(__file__))
-	os.chdir(script_dir)
+	diff_dict, _, _ = calculate_differences(census_df, cur_df)
+	diff_df = pd.DataFrame(diff_dict, columns=['Demographic', 'Percent Difference'])
+
+	script_dir = Path(__file__).resolve().parent
+	target_dir = script_dir / "PowerBI_Data"
+
+	target_dir.mkdir(parents=True, exist_ok=True) # create folder if doesn't exist
+
+	cur_df = cur_df.replace(r'^\s*$', 0, regex=True) # replace empty white space with 0
+	prev_df = prev_df.replace(r'^\s*$', 0, regex=True)
+	cur_df.iloc[:, 1:] = cur_df.iloc[:, 1:].astype(int) # turn all number rows to ints (just in case)
+	prev_df.iloc[:, 1:] = prev_df.iloc[:, 1:].astype(int)
+	cur_df.iloc[:, 1:] = cur_df.iloc[:, 1:] / 10 # fixing weird issue where csv saves with all results multiplied by ten?
+	prev_df.iloc[:, 1:] = prev_df.iloc[:, 1:] / 10
+
+	diff_df.to_csv(target_dir / "difference.csv", index=False)
+	cur_df.to_csv(target_dir / "current_year.csv", index=False)
+	prev_df.to_csv(target_dir / "previous_year.csv", index=False)
+
+def main():
+
+	home_dir = Path.home()
+	os.chdir(home_dir)
 
 	same_xlsx = True
 
 	if same_xlsx:
 		cur_df, prev_df = df_loader(same_xlsx) # two sheets in one
-	else:
-		df = df_loader(same_xlsx) # one sheet
+	# else:
+	# 	df = df_loader(same_xlsx) # one sheet
 
-	workforce_data_analysis(cur_df, prev_df)
-
-
+	print("Starting...")
+	workforce_data_analysis(cur_df, prev_df, home_dir)
+	power_bi_csv(cur_df, prev_df, home_dir)
+	print(f"Files saved to: {home_dir}")
+	messagebox.showinfo("Saved!",
+						f"Files 'contractor_analysis.docx'\nand 'contractor_census_ratio.csv'\nsaved to:\n\n'{home_dir}'\n\nGoodbye!")
+	print("Closing...")
 if __name__ == "__main__":
 	main()
