@@ -7,9 +7,9 @@ In summary, the program will open a GUI interface which will require contractor 
 
 The equation for the demographic ratio is:
 
-number of employees of that demographic<br>
-divided by<br>
-total number of employees
+$$
+\text{Demographic Ratio} = \frac{\text{Number of employees of that demographic}}{\text{Total number of employees}}
+$$
 
 Once these ratios are calculated, the program will take regional census demographic ratios and subtract the differences. The differences are then added to a word doc, with positive value meaning that the demographic is over-represented, and negative value meaning that the demographic is underrepresented.
 
