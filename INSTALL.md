@@ -35,3 +35,27 @@ Once the file is downloaded somewhere on your local machine, go to your terminal
 Once this is ran, a file dialogue window will appear. Use your file finder to find the previously downloaded Contractor D XLSX file and select it. It should state inside the terminal "Selected 'Contractor D Workforce Data Form', Loading..."
 
 Once your terminal says "Loaded 'Contractor D Workforce Data Form'!" You can look inside the mdcr-capstone folder to find two new files, labelled "contractor_analysis.txt" and "contractor_census_ratio.csv", this two files both show the results of the pipeline analysis on the contractor data. The "contractor_analysis.txt" offers a written breakdown of the employment demographics and how they compare to general hirable population as well as the previous year. The "contractor_census_ratio.csv" file offers a formatted version of the demographic comparison data.
+
+## Building a Windows executable
+
+From the project folder, use the same Python environment that runs the pipeline:
+
+```powershell
+.\venv\Scripts\python.exe -m PyInstaller --noconfirm pipeline.spec
+```
+
+The spec file builds a folder-based application at `dist\pipeline`. Launch `dist\pipeline\pipeline.exe`. Keep the executable together with its `_internal` folder; distribute the entire `pipeline` folder, or zip it and have recipients extract it before running the app.
+
+This layout starts faster because it does not unpack support files on every launch. The spec also excludes unused notebook integrations, and the code waits until after dataset selection to load its analysis libraries.
+
+The report template is included in `_internal\template-report.docx`. The code finds it relative to `__file__`, which works when running either the Python script or the packaged executable, regardless of the current working folder.
+
+If generating a new spec file instead, include the template explicitly:
+
+```powershell
+.\venv\Scripts\python.exe -m PyInstaller --onedir --add-data "template-report.docx:." --exclude-module IPython --exclude-module traitlets pipeline.py
+```
+
+Rebuild after changing the code or template. Contractor workbooks are selected at runtime and are not bundled. Reports are saved to the user's home folder.
+
+An older standalone `dist\pipeline.exe`, if present, is a previous build. Use `dist\pipeline\pipeline.exe` for the faster startup.
