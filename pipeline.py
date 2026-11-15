@@ -17,6 +17,8 @@ from typing import Dict
 from typing import cast
 from copy import deepcopy
 from pathlib import Path
+import pandas as pd
+import numpy as np
 
 # file loader
 from tkinter import *
@@ -131,7 +133,6 @@ def df_loader(same_xlsx=True):
 		file_select_ok = messagebox.askokcancel("File Selected", f"Selected '{file_name}'. OK to continue?")
 	load_animation("Loading...")
 	# Show the picker before loading the data-analysis libraries.
-	import pandas as pd
 
 	# If current year and previous year data exists on the same XLSX
 	if same_xlsx:
@@ -180,6 +181,8 @@ def gooey_loader(load_path, save_path):
 	Run entire process given an absolute path (for the gooey)
 	"""
 
+	from docx import Document
+
 	# Load file
 	df = pd.read_excel(f'{load_path}', skiprows=7, sheet_name=None)
 	print(f"Loaded {load_path}.")
@@ -204,7 +207,10 @@ def gooey_loader(load_path, save_path):
 		'Row Total']
 	current_year_df = current_year_df.iloc[1:13].fillna(0)
 
-	workforce_data_analysis(current_year_df, previous_year_df, save_path)
+	tags = dict()
+	template_path = Path(__file__).resolve().parent / "template-report.docx"
+	document = Document(str(template_path))
+	workforce_data_analysis(current_year_df, previous_year_df, save_path, document, tags)
 	power_bi_csv(current_year_df, previous_year_df, save_path)
 
 def census_loader():
@@ -292,7 +298,6 @@ def calculate_region_ratios(df):
 
 	returns: dictionary {demographic:ratio}
 	"""
-	import numpy as np
 
 	categories = [
 	"Total Pop",
