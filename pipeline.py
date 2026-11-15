@@ -1,7 +1,6 @@
 # # # # # # # # # # # # # #
 # MDCR Pipeline Prototype #
 # # # # # # # # # # # # # #
-from typing import Dict
 
 # PURPOSE OF FILE
 # This pipeline Python file controls the data pipeline for data analysis of contractor data.
@@ -11,18 +10,13 @@ from typing import Dict
 # See INSTALL.md for instructions on how to set up and use pipeline
 
 # data loading & analysis libraries are imported when needed below
-# import pymupdf
-# import requests
-from pathlib import Path
 import os
 import sys
 import time
-# from datetime import datetime
-
+from typing import Dict
 from typing import cast
 from copy import deepcopy
-# from docx.text.run import Run
-
+from pathlib import Path
 
 # file loader
 from tkinter import *
@@ -60,7 +54,7 @@ def load_animation(load_str: str):
 	# the duration of animation
 	counttime = 0
 
-	# pointer for travelling the loading string
+	# pointer for traveling the loading string
 	i = 0
 
 	while counttime != 100:
@@ -103,7 +97,7 @@ def load_animation(load_str: str):
 
 		anicount = (anicount + 1) % 4
 		i = (i + 1) % ls_len
-		counttime = counttime + 1
+		counttime += 1
 
 	# for windows OS
 	if os.name == "nt":
