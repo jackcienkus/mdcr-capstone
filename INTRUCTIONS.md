@@ -5,11 +5,11 @@ This guide will show you how to utilize this program’s interface to extract da
 
 In summary, the program will open a GUI interface which will require contractor demographic data as input. The program will take that data and find the ratios of each demographic (white male, white female, hispanic, non-hispanics, etc.). 
 
-The equation is: 
+The equation for the demographic ratio is:
 
-
-Demographic ratio=number of employees of that demographictotal number of employees
-
+number of employees of that demographic<br>
+divided by<br>
+total number of employees
 
 Once these ratios are calculated, the program will take regional census demographic ratios and subtract the differences. The differences are then added to a word doc, with positive value meaning that the demographic is over-represented, and negative value meaning that the demographic is underrepresented.
 
@@ -22,19 +22,25 @@ After following the install guide and setting up the environment, you will be ab
 In your terminal, navigate to where the repository was downloaded. This can be performed by using the ```cd``` command to navigate to the proper repository.
 (Example)
 
+```
 cd path/to/mdcr-capstone
+```
 
 Once inside the directory, type the following command in your terminal to start the program. Once this command is run, give it a few seconds and an interface should appear.
 
 Windows:
+```
 python program.py
+```
 
 macOs / Linux:
+```
 python3 program.py
+```
 
 #### Option Selections
 Once the interface pops-up, it should look something like this:<br>
-[IMAGE HERE]
+<img width="371" height="279" alt="example" src="https://github.com/user-attachments/assets/5e1b8fc4-5d67-46b8-802e-11351b04b2ca" />
 
 We can ignore the checkboxes for the moment, all we need is an input file and an output destination.
 
