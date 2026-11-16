@@ -29,14 +29,19 @@ staff?
 | File / Folder | Description |
 | :--- | :--- |
 | notebooks/ | Contains exploratory and statistical analysis Jupyter notebooks (`B_Analysis.ipynb`, `C_Analysis.ipynb`). |
+| PowerBI_Data/ | Contains data files formatted for PowerBi visualizations |
 | .gitignore | Specifies untracked temporary files and local outputs for Git to ignore |
 | INSTALL.md | Setup and installation instructions for the project |
+| INSTRUCTIONS.md | Guide on how to use the program's interface |
 | LICENSE | Creative Commons license governing repository usage and distribution |
 | README.md| Project overview, research questions, and repository guide |
 | environment.yml |  Conda environment specification and Python package dependencies |
 | pipeline.py | Main data processing and compliance report generation pipeline |
+| program.py| GUI application used to select datafiles and run the pipeline |
+| template-report.docx | Word document template used to generate the reports |
 
-## Install Instructions
-For detailed setup instructions, please see the [Installation & Usage Guide](INSTALL.md)
+## Install & Usage Instructions
+* For detailed setup instructions, please see the [Installation & Usage Guide](INSTALL.md)<br>
+* For usage instructions, please see the [Instructions Guide](INSTRUCTIONS.md)
 
 
