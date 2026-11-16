@@ -20,7 +20,7 @@ This activates the environment created from the previous command. You'll need to
 
 **Using local install**<br>
 Alternatively, if you would prefer to install the required packages on your machine, use pip:<br>
-```pip install pymupdf openpyxl requests pandas numpy```
+```pip install -r requirements.txt```
 
 With this, you should now have the necessary tools installed to use the pipeline.
 
