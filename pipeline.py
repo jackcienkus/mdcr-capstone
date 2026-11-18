@@ -25,6 +25,8 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 
+CENSUS_DATAFRAME = None
+
 # state loading dictionary for census
 STATE_TO_FIPS = { # Michigan is 26
 	"AL": "01", "AK": "02", "AZ": "04", "AR": "05",
@@ -444,7 +446,10 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 	from docx.oxml.ns import qn
 	from docx.oxml.text.run import CT_R
 
-	census_df = census_loader(region)
+	global CENSUS_DATAFRAME
+	if CENSUS_DATAFRAME is None:
+		CENSUS_DATAFRAME = census_loader(region)
+	census_df = CENSUS_DATAFRAME
 
 	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
 	# yr_diff_dict, cur_dict, prev_dict = calculate_year_differences(prev_df, cur_df)
@@ -594,7 +599,10 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 def power_bi_csv(cur_df, prev_df, path: Path, region="USA"):
 	import pandas as pd
 
-	census_df = census_loader(region=region)
+	global CENSUS_DATAFRAME
+	if CENSUS_DATAFRAME is None:
+		CENSUS_DATAFRAME = census_loader(region=region)
+	census_df = CENSUS_DATAFRAME
 
 	diff_dict, _, _ = calculate_differences(census_df, cur_df)
 	diff_df = pd.DataFrame(diff_dict, columns=['Demographic', 'Percent Difference'])
