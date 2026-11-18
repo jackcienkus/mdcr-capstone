@@ -203,13 +203,18 @@ class DataProcessorApp(QMainWindow):
 		if dir_path:
 			self.txt_output.setText(dir_path)
 
+	def handle_finished(self):
+		self.btn_process.setEnabled(True)
+		self.lbl_status.setText(f"Processing complete, files saved to {self.output_dir}")
+		self.lbl_status.setStyleSheet("color: green;")
+
 	def run_gooey_process(self, input_file, output_dir):
+		self.output_dir = output_dir
+		
 		self.lbl_status.setText(f"Processing {input_file}...")
 		worker = GooeyWorker(input_file, output_dir, self.region)
 		self.btn_process.setEnabled(False)
-		worker.signals.finished.connect(lambda: self.btn_process.setEnabled(True))
-		worker.signals.finished.connect(lambda: self.lbl_status.setText(f"Processing complete, files saved to {output_dir}"))
-		worker.signals.finished.connect(lambda: self.lbl_status.setStyleSheet("color: green;"))
+		worker.signals.finished.connect(self.handle_finished)
 		
 		self.threadpool.start(worker)
 
