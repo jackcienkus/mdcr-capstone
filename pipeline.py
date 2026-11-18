@@ -397,7 +397,6 @@ def calculate_year_differences(prev_year, cur_year):
 	(positive value is over-represented, negative value is underrepresented)
 
 	"""
-	import numpy as np
 
 	prev_dict = calculate_contractor_ratios(prev_year) # get previous contractor demographic ratios
 	cur_dict = calculate_contractor_ratios(cur_year) # get current contractor demographic ratios
