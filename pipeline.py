@@ -176,7 +176,7 @@ def df_loader(same_xlsx=True):
 
 		return df
 
-def gooey_loader(load_path, save_path):
+def gooey_loader(load_path, save_path, region="USA"):
 	"""
 	Run entire process given an absolute path (for the gooey)
 	"""
@@ -210,10 +210,10 @@ def gooey_loader(load_path, save_path):
 	tags = dict()
 	template_path = Path(__file__).resolve().parent / "template-report.docx"
 	document = Document(str(template_path))
-	workforce_data_analysis(current_year_df, previous_year_df, save_path, document, tags)
-	power_bi_csv(current_year_df, previous_year_df, save_path)
+	workforce_data_analysis(current_year_df, previous_year_df, save_path, document, tags, region=region)
+	power_bi_csv(current_year_df, previous_year_df, save_path, region=region)
 
-def census_loader():
+def census_loader(region="USA"):
 	"""
 	Pulls and returns regional EEO data from the US Census API
 
@@ -242,10 +242,17 @@ def census_loader():
 	# params for loading
 	# for: state:26 is Michigan
 	# do: for: us-1 for USA
+	# "0100000US"
+	if region == "USA":
+		load_region = "0100000US"
+	else:
+		load_region = "0400000US" + STATE_TO_FIPS[region]
+
+	print(f"Census loading with region: {region}, load region code: {load_region}")
 	params = {
 		"get": "group(EEOALL1R)",
 		"EEO": "0000",
-		"ucgid": "0400000US26",
+		"ucgid": load_region,
 		"key": api_key
 	}
 	data_response = requests.get(dataset_url, params=params)
@@ -254,6 +261,8 @@ def census_loader():
 	df = pd.DataFrame(raw_data[1:], columns=raw_data[0])
 
 	df = df.rename(columns=var_label_map)
+
+	print(f"Loaded {region} successfully!")
 
 	return df
 
@@ -418,7 +427,7 @@ def numeric_analysis(diff_dict):
 
 
 def workforce_data_analysis(cur_df, prev_df, path: Path,
-							document, textbox_tags: Dict[str, str]):
+							document, textbox_tags: Dict[str, str], region="USA"):
 	"""
 	Does a workforce analysis on provided contractor data and outputs the results with proper language.
 	Output is in form of a csv document and txt file.
@@ -435,7 +444,7 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 	from docx.oxml.ns import qn
 	from docx.oxml.text.run import CT_R
 
-	census_df = census_loader()
+	census_df = census_loader(region)
 
 	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)
 	# yr_diff_dict, cur_dict, prev_dict = calculate_year_differences(prev_df, cur_df)
@@ -480,7 +489,7 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 	# Demographics
 	# statements.append("Contractor’s reported current workforce represented a surplus or deficit of the available workforce for:")
 
-	findings = ""
+	findings = f"Contractor Demographics compared to hiring region of {region} represented a surplus/deficit of:\n"
 	for key in diff_dict:
 		findings += f"{key} at {round(diff_dict[key], 1)}% (or {int((diff_dict[key]/100) * n_employees)} employees), "
 
@@ -582,10 +591,10 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 	with open(f"contractor_analysis.txt", "w", encoding="utf-8") as file:
 		file.write(words)
 
-def power_bi_csv(cur_df, prev_df, path: Path):
+def power_bi_csv(cur_df, prev_df, path: Path, region="USA"):
 	import pandas as pd
 
-	census_df = census_loader()
+	census_df = census_loader(region=region)
 
 	diff_dict, _, _ = calculate_differences(census_df, cur_df)
 	diff_df = pd.DataFrame(diff_dict, columns=['Demographic', 'Percent Difference'])
