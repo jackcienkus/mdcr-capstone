@@ -38,6 +38,7 @@ MANIFEST
 *.manifest
 *.spec
 !pipeline.spec
+!program.spec
 
 # Installer logs
 pip-log.txt
