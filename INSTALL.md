@@ -2,10 +2,14 @@
 
 ## Installation Steps
 *Step 1*<br>
+Ensure you have the most recent version of Python. If you don't, or don't have Python installed at all,
+get the most recent version [here](https://www.python.org/downloads/).
+
+*Step 2*<br>
 Clone the repository to your local machine with the command<br>
 ```git clone https://github.com/jackcienkus/mdcr-capstone.git```
 
-*Step 2*<br>
+*Step 3*<br>
 **Using Conda**<br>
 Navigate to the folder of the repository on your local machine using cd, for example:<br>
 ```cd Path\to\mdcr-capstone```
@@ -25,4 +29,4 @@ Alternatively, if you would prefer to install the required packages on your mach
 With this, you should now have the necessary tools installed to use the pipeline.
 
 ## Usage Instructions
-For instructions on running the pipeline and program, go to INSTRUCTIONS.md
+For instructions on running the pipeline and program, go to ```INSTRUCTIONS.md```
