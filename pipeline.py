@@ -26,6 +26,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 CENSUS_DATAFRAME = None
+SET_REGION = None
 
 # state loading dictionary for census
 STATE_TO_FIPS = { # Michigan is 26
@@ -178,12 +179,20 @@ def df_loader(same_xlsx=True):
 
 		return df
 
-def gooey_loader(load_path, save_path, region="USA"):
+def gooey_loader(load_path, save_path, region="USA", save_census=False):
 	"""
 	Run entire process given an absolute path (for the gooey)
 	"""
+	global SET_REGION
+	global CENSUS_DATAFRAME
 
 	from docx import Document
+
+	if SET_REGION == None:
+		SET_REGION = region
+	elif SET_REGION != region:
+		SET_REGION = region
+		CENSUS_DATAFRAME = None
 
 	# Load file
 	df = pd.read_excel(f'{load_path}', skiprows=7, sheet_name=None)
@@ -212,10 +221,9 @@ def gooey_loader(load_path, save_path, region="USA"):
 	tags = dict()
 	template_path = Path(__file__).resolve().parent / "template-report.docx"
 	document = Document(str(template_path))
-	workforce_data_analysis(current_year_df, previous_year_df, save_path, document, tags, region=region)
-	power_bi_csv(current_year_df, previous_year_df, save_path, region=region)
+	workforce_data_analysis(current_year_df, previous_year_df, save_path, document, tags, region=region, save_census=save_census)
 
-def census_loader(region="USA"):
+def census_loader(region="USA", save_data=False, output_dir=None):
 	"""
 	Pulls and returns regional EEO data from the US Census API
 
@@ -263,6 +271,16 @@ def census_loader(region="USA"):
 	df = pd.DataFrame(raw_data[1:], columns=raw_data[0])
 
 	df = df.rename(columns=var_label_map)
+
+	if save_data:
+		download_df = df.copy(deep=True)
+		num_cols = [c for c in download_df.columns if c.endswith(("E", "M")) and c != "NAME"]
+		download_df[num_cols] = download_df[num_cols].apply(pd.to_numeric, errors="coerce")
+		download_df = download_df.loc[:, ~download_df.columns.str.endswith(("EA", "MA"))]
+
+		if output_dir[-1] != '/':
+			output_dir += "/"
+		df.to_excel(output_dir + f"{region}_census_eeo.xlsx", index=False)
 
 	print(f"Loaded {region} successfully!")
 
@@ -428,7 +446,7 @@ def numeric_analysis(diff_dict):
 
 
 def workforce_data_analysis(cur_df, prev_df, path: Path,
-							document, textbox_tags: Dict[str, str], region="USA"):
+							document, textbox_tags: Dict[str, str], region="USA", save_census=False):
 	"""
 	Does a workforce analysis on provided contractor data and outputs the results with proper language.
 	Output is in form of a csv document and txt file.
@@ -447,7 +465,7 @@ def workforce_data_analysis(cur_df, prev_df, path: Path,
 
 	global CENSUS_DATAFRAME
 	if CENSUS_DATAFRAME is None:
-		CENSUS_DATAFRAME = census_loader(region)
+		CENSUS_DATAFRAME = census_loader(region, save_census, path)
 	census_df = CENSUS_DATAFRAME
 
 	diff_dict, regional_dict, contractor_dict = calculate_differences(census_df, cur_df)

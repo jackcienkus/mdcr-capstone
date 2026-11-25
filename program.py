@@ -67,16 +67,17 @@ class WorkerSignals(QObject):
 	progress = Signal(str)
 
 class GooeyWorker(QRunnable):
-	def __init__(self, input_file, output_dir, region):
+	def __init__(self, input_file, output_dir, region, save_census):
 		super().__init__()
 		self.input_file = input_file
 		self.output_dir = output_dir
 		self.region = region
+		self.save_census = save_census
 		self.signals = WorkerSignals()
 
 	@Slot()
 	def run(self):
-		gooey_loader(self.input_file, self.output_dir, self.region)
+		gooey_loader(self.input_file, self.output_dir, self.region, self.save_census)
 		self.signals.finished.emit()
 
 class DataProcessorApp(QMainWindow):
@@ -134,7 +135,6 @@ class DataProcessorApp(QMainWindow):
 		demo_layout.setSpacing(0)
 
 		self.chk_census = QCheckBox("Save Census Data")
-		self.chk_powerbi = QCheckBox("Save Data for Power BI")
 
 		self.combo_label = QLabel("US Census Demographic Region")
 		self.combo = QComboBox()
@@ -144,10 +144,7 @@ class DataProcessorApp(QMainWindow):
 
 		# Set default states if desired
 		#self.chk_census.setChecked(True)
-		self.chk_powerbi.setChecked(True)
-
 		chk_layout.addWidget(self.chk_census)
-		chk_layout.addWidget(self.chk_powerbi)
 
 		demo_layout.addWidget(self.combo_label, alignment=Qt.AlignmentFlag.AlignVCenter)
 		demo_layout.addWidget(self.combo, alignment=Qt.AlignmentFlag.AlignVCenter)
@@ -212,33 +209,33 @@ class DataProcessorApp(QMainWindow):
 		self.output_dir = output_dir
 		
 		self.lbl_status.setText(f"Processing {input_file}...")
-		worker = GooeyWorker(input_file, output_dir, self.region)
+		worker = GooeyWorker(input_file, output_dir, self.region, self.save_census)
 		self.btn_process.setEnabled(False)
 		worker.signals.finished.connect(self.handle_finished)
 		
 		self.threadpool.start(worker)
 
 	@Slot(str)
-
 	def run_processing(self):
 		# Retrieve the parameters selected by the user
 		input_file = self.txt_input.text()
 		output_dir = self.txt_output.text()
-		save_census = self.chk_census.isChecked()
-		save_powerbi = self.chk_powerbi.isChecked()
+		self.save_census = self.chk_census.isChecked()
 
 		# Validation Check
 		if not input_file or not output_dir:
 			self.lbl_status.setText("Error: Please select both an input file and output directory.")
 			self.lbl_status.setStyleSheet("color: red;")
 			return
+		else:
+			self.lbl_status.setStyleSheet("color: black;")
 
 		# Gooey loading
 		self.run_gooey_process(input_file, output_dir)
 		
 		# Example print to show captured states in the console
 		print(f"Processing: {input_file} -> {output_dir}")
-		print(f"Options chosen -> Census: {save_census}, Power BI: {save_powerbi}")
+		print(f"Options chosen -> Census: {self.save_census}")
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
